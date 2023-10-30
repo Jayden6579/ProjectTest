@@ -11,27 +11,32 @@
             margin: 0;
             overflow: hidden;
             background-color: rgb(23, 23, 23);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        #game-container {
+        #game-container  {
             position: relative;
             width: 100%;
-            height: 80vh;
+            height: 70vh; 
             background-color: rgb(23, 23, 23);
         }
 
+
         #player {
             position: absolute;
-            width: 55px;
-            height: 65px;
+            width: 70px;
+            height: 80px;
             background-image: url('rabbit.png');
             background-size: contain;
         }
 
         .square {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             background-image: url('Coin.png');
             background-size: cover;
         }
@@ -41,7 +46,7 @@
             font: message-box;
             position: absolute;
             top: 10px;
-            right: 290px;
+            right: 10px;
             font-size: 24px;
         }
 
@@ -50,8 +55,8 @@
             font: message-box;
             position: absolute;
             top: 10px;
-            left: 290px;
-            font-size: 20px;
+            left: 10px;
+            font-size: 24px;
         }
 
         #game-over {
@@ -91,11 +96,11 @@
         }
 
         #left-button {
-            left: 300px;
+            left: 5px;
         }
 
         #right-button {
-            right: 300px;
+            right: 5px;
         }
 
         #end-game-message {
@@ -124,6 +129,21 @@
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
+        }
+
+        #info-container {
+            width: 150px; /* Adjust the width as needed */
+            text-align: center;
+            color: white;
+            font: message-box;
+            position: absolute;
+            top: 10px;
+        }
+
+        /* Updated styles for Time Left and Coins */
+        #timer,
+        #score {
+            margin-bottom: 10px; /* Adjust margin as needed */
         }
     </style>
 </head>
@@ -205,12 +225,19 @@
         let squareSpeed = 10;
         let gameIsOver = false;
         let timeIsUp = false; // New flag to track if time is up
+        let totalSquaresDropped = 0; // Variable to track the total number of dropped squares
+        let totalCoins = 0;
 
         function createSquare() {
-    if (gameIsOver || timeIsUp) {
+    if (gameIsOver || timeIsUp || totalSquaresDropped >= 150) {
         return;
     }
+ 
+    totalSquaresDropped++; 
 
+  
+    const fallingTime = 15 * 100; // 30 seconds in milliseconds
+    const squareSpeed = fallingTime / 150;
     // Randomly determine the number of regular squares to create in each call
     const numberOfSquaresToCreate = Math.random() < 0.5 ? 1 : 3; // Adjust the probability as needed
 
@@ -257,7 +284,7 @@
     }
 
     // Adjust the interval for creating regular squares for variability
-    const createSquareInterval = Math.random() * 2000 + 1000; // Random interval between 1 to 3 seconds
+    const createSquareInterval = Math.random() * 3500 + 2000; // Random interval between 1 to 3 seconds
     setTimeout(createSquare, createSquareInterval);
 }
 
@@ -283,8 +310,15 @@
         });
 
         function updateScore() {
-            scoreDisplay.textContent = "Coins: " + score;
-        }
+    scoreDisplay.textContent = "Coins: " + score;
+
+    // Check if the total time allowed for collecting coins is over (30 seconds)
+    if (timeLeft <= 0 && !gameIsOver && totalCoins !== score) {
+        // End the game as the time for collecting coins has ended
+        timeIsUp = true;
+        endGame(false);
+    }
+}
 
         function movePlayerLeft() {
             if (playerX > leftButton.getBoundingClientRect().right && !gameIsOver && !timeIsUp) {
@@ -327,14 +361,15 @@
         let timeLeft = 30; // Initial time in seconds
 
         function updateTimeLeft() {
-            if (timeLeft > 0 && !gameIsOver) {
-                timeLeft--;
-                timerDisplay.textContent = "Time Left: " + timeLeft;
-            } else {
-                timeIsUp = true; // Set the timeIsUp flag to true
-                endGame(false); // Player runs out of time (loses)
-            }
-        }
+    if (timeLeft > 0 && !gameIsOver) {
+        timeLeft--;
+        timerDisplay.textContent = "Time Left: " + timeLeft;
+        updateScore(); // Update the score during the time
+    } else {
+        timeIsUp = true; // Set the timeIsUp flag to true
+        endGame(false); // Player runs out of time (loses)
+    }
+}
 
         function endGame(win) {
             gameIsOver = true;
