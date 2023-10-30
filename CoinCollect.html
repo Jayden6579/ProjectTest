@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
     <title>Mini games|CollectCoin</title>
     <style>
@@ -15,6 +15,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            touch-action: manipulation;
         }
 
         #game-container  {
@@ -92,7 +93,7 @@
             border-radius: 40%;
             width: 49px;
             height: 49px;
-            border: none;
+            border: 2px solid silver;
         }
 
         #left-button {
@@ -167,14 +168,6 @@
     </div>
 
     <script>
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (event) => {
-            const now = new Date().getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
         const gameContainer = document.getElementById("game-container");
         const player = document.getElementById("player");
         const playerWidth = player.offsetWidth;
