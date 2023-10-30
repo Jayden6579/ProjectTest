@@ -231,7 +231,7 @@
         let totalCoins = 0;
 
         function createSquare() {
-    if (gameIsOver || timeIsUp || totalSquaresDropped >= 150) {
+    if (gameIsOver || timeIsUp || totalSquaresDropped >= 100) {
         return;
     }
  
@@ -239,7 +239,7 @@
 
   
     const fallingTime = 15 * 100; // 30 seconds in milliseconds
-    const squareSpeed = fallingTime / 150;
+    const squareSpeed = fallingTime / 120;
     // Randomly determine the number of regular squares to create in each call
     const numberOfSquaresToCreate = Math.random() < 0.5 ? 1 : 3; // Adjust the probability as needed
 
@@ -285,8 +285,12 @@
         }, 10);
     }
 
+    if (totalSquaresDropped >= 100) {
+        return; // Limit the total number of squares to be dropped
+    }
+
     // Adjust the interval for creating regular squares for variability
-    const createSquareInterval = Math.random() * 3500 + 2000; // Random interval between 1 to 3 seconds
+    const createSquareInterval = Math.random() * 5000 + 3000; // Random interval between 1 to 3 seconds
     setTimeout(createSquare, createSquareInterval);
 }
 
